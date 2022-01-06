@@ -59,12 +59,12 @@ public class UserRepoCustomImpl implements UserRepoCustom{
 		return userDetails;
 	}
 
-	//update the userInfo using his ID.
+	//update the userInfo using his ID and cannot update if isDeleted : is true.
 	@Override
 	public boolean updateUserDetails(UserDetailsModel userDetailsModel) {
 		
 		Query query = new Query();
-		query.addCriteria(Criteria.where("_id").is(userDetailsModel.getId()));
+		query.addCriteria(Criteria.where("_id").is(userDetailsModel.getId()).and("isDeleted").is(false));
 		
 		Update update = new Update();
 		update.set("fname",userDetailsModel.getFname());
@@ -75,14 +75,20 @@ public class UserRepoCustomImpl implements UserRepoCustom{
 		
 		UpdateResult result =  mongoTemplate.updateFirst(query, update, UserDetailsModel.class);
 		
-		return result.wasAcknowledged();
+		if( result.getModifiedCount() > 0) {
+			return true;
+			
+		}else
+		{
+			return false;
+		}
 	}
 
 	@Override
 	public boolean deleteUserDetails(String mbNumber) {
 		
 		//Soft Delete Technique. UI team don't show records whose isDeleted Flag is set to true.
-		
+		//Deletes the first matching record. Returns true if deleted.
 		Query query = new Query();
 		query.addCriteria(Criteria.where("mobileNumber").is(mbNumber));
 		
@@ -90,6 +96,12 @@ public class UserRepoCustomImpl implements UserRepoCustom{
 		update.set("isDeleted", true);
 		
 		UpdateResult result =  mongoTemplate.updateFirst(query, update, UserDetailsModel.class);
-		return result.wasAcknowledged();		
+		if( result.getModifiedCount() > 0) {
+			return true;
+			
+		}else
+		{
+			return false;
+		}		
 	}
 }

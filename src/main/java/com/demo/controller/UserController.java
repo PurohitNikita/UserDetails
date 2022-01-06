@@ -28,7 +28,7 @@ public class UserController
 	public String addUser(@RequestBody UserDetailsModel user)
 	{
 		String id = userRepoCustom.addUserDetails(user);
-		return "User Created with Id"+id;
+		return "User Created with Id: "+id;
 	}
 
 	@GetMapping(value = "/get_all_users")
