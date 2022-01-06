@@ -41,21 +41,25 @@ public class UserRepoCustomImpl implements UserRepoCustom{
 		return userDetailsModel.getId().toString();
 	}
 
+	//GetInformation of all the users which are not deleted i.e whose isDeleted boolean is false.
 	@Override
 	public List<UserDetailsModel> getUserDetails() {
-		
-		return mongoTemplate.findAll(UserDetailsModel.class);
+		Query query = new Query();
+		query.addCriteria(Criteria.where("isDeleted").is(false));
+
+		return mongoTemplate.find(query,UserDetailsModel.class);
 	}
 
 	@Override
 	public UserDetailsModel getUserDetailsByMbNumber(String mobileNumber) {
 		
 		Query query = new Query();
-		query.addCriteria(Criteria.where("mobileNumber").is(mobileNumber));
+		query.addCriteria(Criteria.where("mobileNumber").is(mobileNumber).and("isDeleted").is(false));
 		UserDetailsModel userDetails = mongoTemplate.findOne(query,UserDetailsModel.class);
 		return userDetails;
 	}
 
+	//update the userInfo using his ID.
 	@Override
 	public boolean updateUserDetails(UserDetailsModel userDetailsModel) {
 		
