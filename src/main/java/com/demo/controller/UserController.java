@@ -28,7 +28,7 @@ public class UserController
 	public String addUser(@RequestBody UserDetailsModel user)
 	{
 		String id = userRepoCustom.addUserDetails(user);
-		return id;
+		return "User Created with Id: "+id;
 	}
 
 	@GetMapping(value = "/get_all_users")
@@ -44,17 +44,17 @@ public class UserController
 	}
 	
 	@PostMapping(value = "/update_user_details")
-	public boolean updateUserDetails(@RequestBody UserDetailsModel user)
+	public String updateUserDetails(@RequestBody UserDetailsModel user)
 	{
 		boolean isUpdated = userRepoCustom.updateUserDetails(user);
-		return isUpdated;
+		return "Update Status :"+isUpdated;
 	}
 	 
-	@GetMapping(value = "/update_user_details/{id}")
-	public boolean DeleteUser(@PathVariable String id)
+	@GetMapping(value = "/delete_user_details/{mbNumber}")
+	public String DeleteUser(@PathVariable String mbNumber)
 	{
-		boolean isDeleted = userRepoCustom.deleteUserDetails(id);
-		return isDeleted;
+		boolean isDeleted = userRepoCustom.deleteUserDetails(mbNumber);
+		return "Record Deleted :"+isDeleted;
 	}
 
 
